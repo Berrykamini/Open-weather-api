@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
+http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="88d27afd-fac1-48d6-87fc-aebb5e1f80c5" >
+		 <http:listener-connection host="${secure::main.api.host}" port="${secure::main.api.port}" />
+	</http:listener-config>
+	
+	<http:request-config name="openWeather_Request_configuration" doc:name="HTTP Request configuration" doc:id="1a6b5485-f9cf-422b-8a6b-d5a93c1f3fbd" >
+		<http:request-connection protocol="HTTPS" host="${secure::openweather.api.host}" />
+	</http:request-config>
+	
+	 <apikit:config name="weather-api-config" api="weather-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+	<secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="76a9655b-497a-46f0-85bf-b8424d1c416b" file="properties\weather-api-${mule.env}-properties.yaml" key="${key}" />
+	 
+</mule>

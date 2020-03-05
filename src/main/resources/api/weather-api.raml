@@ -1,0 +1,23 @@
+#%RAML 1.0
+title: Weather REST API Interface
+baseUri: http://localhost:8081/weather-api/{version}
+version: v1
+/weather:
+  description: Retrieve the weather of a city by sending payload
+  post:
+    responses:
+      200:
+        body:
+          application/json:
+            example: |
+                example: 
+                  {
+                    "lastname": "Smith",
+                    "name": "John",
+                    "timmeZone": "-18000",
+                    "fullName": "JohnSmith",
+                    "dateTime": "20200305154130822030",
+                    "temperatureCelcius": 295.18,
+                    "city": "Melbourne",
+                    "location": "Australia"
+                  }

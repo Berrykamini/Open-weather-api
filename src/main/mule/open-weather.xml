@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd">
+	
+	
+	
+	<sub-flow name="open-weather-subflow" doc:id="6b6e79c0-afce-4b59-8656-eff5c904ec30" >
+		<ee:transform doc:name="Set Input Payload Variable" doc:id="d5e52be9-ebe8-48cd-ad6c-ab5d4be8b342" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+}]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="cityName" ><![CDATA[payload.city]]></ee:set-variable>
+				<ee:set-variable variableName="inputPayload" ><![CDATA[payload]]></ee:set-variable>
+				<ee:set-variable variableName="apikey" ><![CDATA[p("secure::openweather.api.apikey")]]></ee:set-variable>
+				<ee:set-variable variableName="countryCode" ><![CDATA[p("secure::openweather.api.code")]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<http:request method="GET" doc:name="Open weather API Request" doc:id="d85341e3-12c5-4d17-93a4-fc71ed4bd609" config-ref="openWeather_Request_configuration" path="${secure::openweather.api.path}">
+			<http:query-params ><![CDATA[#[output application/java
+---
+{
+	q : vars.cityName,
+	q: vars.countryCode,
+	appid : vars.apikey
+}]]]></http:query-params>
+			 	
+		</http:request>
+		<ee:transform doc:name="Output Response" doc:id="898b250a-c5c0-41cb-bde0-aa08c0ebf615" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+var dateNow= now() + |P1D|
+---
+{
+	lastname: vars.inputPayload.lastName,
+	name: vars.inputPayload.name,
+	timeZone: payload.timezone as String default "",
+	fullName: vars.inputPayload.name ++  " " ++ vars.inputPayload.lastName,
+	dateTime: dateNow as String 
+	{
+		format: "yyyyMMddHHmmssSSSSs"
+	},
+	temperatureCelcius: payload.main.temp,
+	city: vars.inputPayload.city,
+	location: vars.inputPayload.country
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+</mule>

@@ -1,0 +1,18 @@
+#HTTP Configuration     
+main:
+  api:
+    host: "0.0.0.0"
+    port: "8081"
+    path: "v1"
+    
+#Configuration
+
+openweather:
+  api:
+    host: "api.openweathermap.org"
+    apikey: "3acb5f32d5a146043291cc9e1ce8a621"
+    path: "/data/2.5/weather"
+    code: "AU"  
+  
+  
+    
